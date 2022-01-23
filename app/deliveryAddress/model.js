@@ -2,7 +2,7 @@ const {Schema, model} = require('mongoose');
 
 const deliveryAddressSchema = Schema({
     
-    name:{
+    nama:{
         type: String,
         required: [true, 'Nama Alamat harus diisi'],
         maxlength: [255, 'Panjang karakter maksimal 255 karakter']

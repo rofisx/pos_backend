@@ -190,7 +190,7 @@ const index = async (req, res, next) => {
     }
 
     if(category.length){
-        let categoryResult = await Category.findOne({name: {$regex: `${category}`}, $options: 'i'});
+        let categoryResult = await Category.findOne({name: {$regex: new RegExp(category, 'i')}});
 
         if(categoryResult){
             criteria = {...criteria, category: categoryResult._id}
@@ -204,7 +204,7 @@ const index = async (req, res, next) => {
        }
     }
 
-    let count = await Product.find().countDocuments();
+    let count = await Product.find(criteria).countDocuments();
 
     try{
         let product = await Product

@@ -18,7 +18,7 @@ const invoiceSchema = Schema({
         kabupaten: { type: String, required: [true, 'kabupaten harus diisi']},
         kecamatan: { type: String, required: [true, 'kecamatan harus diisi']},
         kelurahan: { type: String, required: [true, 'kelurahan harus diisi']},
-        default: {type: String}
+        detail: {type: String}
     },
 
     total: {
@@ -43,4 +43,4 @@ const invoiceSchema = Schema({
     }
 }, {timestamps: true});
 
-module.exports = model("invoice", invoiceSchema);
+module.exports = model("Invoice", invoiceSchema);

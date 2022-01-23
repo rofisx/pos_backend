@@ -20,7 +20,7 @@ const orderSchema = Schema({
         kabupaten: { type: String, required: [true, 'kabupaten harus diisi']},
         kecamatan: { type: String, required: [true, 'kecamatan harus diisi']},
         kelurahan: { type: String, required: [true, 'kelurahan harus diisi']},
-        default: {type: String}
+        detail: {type: String}
     },
 
     user: {
@@ -36,8 +36,10 @@ orderSchema.plugin(AutoIncrement, {inc_field: 'order_number'});
 orderSchema.virtual('items_count').get(function(){
     return this.order_items.reduce((total, item) => total + parseInt(item.qty), 0);
 });
+
 orderSchema.post('save', async function(){
     let sub_total = this.order_items.reduce((total, item) => total += (item.price * item.qty), 0);
+    // console.log('Pesan Subtotal ',sub_total)
     let invoice = new Invoice({
         user: this.user,
         order: this._id,
@@ -46,6 +48,7 @@ orderSchema.post('save', async function(){
         total: parseInt(sub_total + this.delivery_fee),
         delivery_address: this.delivery_address
     });
+    
     await invoice.save();
 });
 module.exports = model('Order', orderSchema);

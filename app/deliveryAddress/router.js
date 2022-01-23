@@ -10,8 +10,12 @@ router.post('/address',
     police_check('create', 'DeliveryAddress'),
     deliveryAddressController.store
 );
-router.put('/address/:id',deliveryAddressController.update
+router.put('/address/:id',
+    police_check('update', 'DeliveryAddress'),
+    deliveryAddressController.update
 );
-router.delete('/address:/id',deliveryAddressController.destroy
+router.delete('/address/:id',
+    police_check('delete', 'DeliveryAddress'),
+    deliveryAddressController.destroy
 );
 module.exports = router;

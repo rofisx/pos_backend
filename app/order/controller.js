@@ -7,8 +7,10 @@ const Orderitem = require('../order_item/model');
 const store = async(req, res, next) => {
     try {
         let {delivery_fee, delivery_address} = req.body;
-        let item = await CartItem.find({user: req.user._id}).populate('product');
-        if(!item) {
+        // console.log('Pesan 1 ',req.body)
+        let items = await CartItem.find({user: req.user._id}).populate('product');
+        // console.log('Pesan 2 ', items);
+        if(!items) {
             return res.json({
                 error: 1,
                 message: `You're not create order because you have not items in cart`
@@ -16,6 +18,7 @@ const store = async(req, res, next) => {
         }
 
         let address = await DeliveryAddress.findById(delivery_address);
+        // console.log('Pesan 3 ', address);
         let order = new Order({
             _id: new Types.ObjectId(),
             status: 'waiting_payment',
@@ -30,7 +33,8 @@ const store = async(req, res, next) => {
             user: req.user._id
         });
 
-        let orderItems = await Orderitem
+        let orderItems = 
+                await Orderitem
                 .insertMany(items.map(item => ({
                     ...item,
                     name: item.product.name,
@@ -39,10 +43,12 @@ const store = async(req, res, next) => {
                     order: order._id,
                     product: item.product._id
                 })));
-            orderItems.forEach(item => order.order_items.push(item));
-            order.save();
-            await CartItem.deleteMany({user: req.user._id});
-            return res.json(order);
+                orderItems.forEach(item => order.order_items.push(item));
+                // console.log('Pesan 4', orderItems);
+                order.save();
+                // orderItems.save();
+                await CartItem.deleteMany({user: req.user._id});
+                return res.json(order);
     } catch (err) {
         if( err && err.name === 'ValidationError'){
             return res.json({
@@ -58,7 +64,7 @@ const store = async(req, res, next) => {
 
 const index = async(req, res, next) => {
     try {
-        let {skip = 0, limit = 20} = req.body;
+        let {skip = 0, limit = 10} = req.query;
         let count = await Order.find({user: req.user._id}).countDocuments();
         let orders = await Order.find({user: req.user._id})
                     .skip(parseInt(skip))

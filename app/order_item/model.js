@@ -30,4 +30,4 @@ const orderItemSchema = Schema({
     }
 });
 
-module.exports = model('OderItem', orderItemSchema);
+module.exports = model('OrderItem', orderItemSchema);
